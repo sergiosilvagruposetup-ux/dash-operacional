@@ -3,96 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BI Operacional | Gestão Real-Time</title>
+    <title>BI Operacional | Sérgio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; }
-        .card { background: white; border-radius: 1rem; padding: 1.5rem; border: 1px solid #e2e8f0; }
-        select { border: 1px solid #cbd5e1; border-radius: 0.5rem; padding: 0.4rem; font-size: 0.8rem; min-width: 140px; }
+        .card { background: white; border-radius: 1rem; padding: 1.5rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        select { border: 1px solid #cbd5e1; border-radius: 0.5rem; padding: 0.5rem; font-size: 0.8rem; min-width: 150px; background: white; outline: none; }
     </style>
 </head>
 <body class="p-4 lg:p-8">
 
     <div class="max-w-7xl mx-auto">
-        <header class="flex flex-col lg:flex-row justify-between mb-8 gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-            <div>
-                <h1 class="text-2xl font-bold text-slate-900">Estratificação Operacional</h1>
-                <p class="text-slate-500 text-sm font-medium">Sincronizado via Google Sheets</p>
-            </div>
-            
-            <div class="flex flex-wrap gap-3">
-                <div class="flex flex-col"><label class="text-[10px] font-bold text-slate-400 uppercase mb-1">Centro</label>
-                    <select id="sel-centro" onchange="process()"></select></div>
-                <div class="flex flex-col"><label class="text-[10px] font-bold text-slate-400 uppercase mb-1">Ano</label>
-                    <select id="sel-ano" onchange="process()"></select></div>
-                <div class="flex flex-col"><label class="text-[10px] font-bold text-slate-400 uppercase mb-1">Mês</label>
-                    <select id="sel-mes" onchange="process()">
-                        <option value="Todos">Todos</option>
-                        <option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option>
-                        <option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option>
-                        <option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option>
-                        <option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
-                    </select></div>
+        <header class="bg-white p-6 rounded-2xl border border-slate-200 mb-8 shadow-sm">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 leading-tight">Estratificação Operacional</h1>
+                    <p class="text-slate-500 text-sm font-medium italic">Sincronizado via Google Sheets</p>
+                </div>
+                
+                <div class="flex flex-wrap gap-4 items-end">
+                    <div class="flex flex-col"><label class="text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Centro de Serviço</label>
+                        <select id="sel-centro" onchange="processData()"><option value="Todos">Carregando...</option></select></div>
+                    <div class="flex flex-col"><label class="text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Ano</label>
+                        <select id="sel-ano" onchange="processData()"><option value="Todos">Carregando...</option></select></div>
+                    <div class="flex flex-col"><label class="text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Mês</label>
+                        <select id="sel-mes" onchange="processData()">
+                            <option value="Todos">Todos os Meses</option>
+                            <option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option>
+                            <option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option>
+                            <option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option>
+                            <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+                        </select></div>
+                </div>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div class="card border-l-4 border-slate-400 text-center"><p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Testes Totais</p><h2 id="kpi-total" class="text-2xl font-bold">---</h2></div>
-            <div class="card border-l-4 border-blue-500 text-center"><p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Benchmark</p><h2 id="kpi-bench" class="text-xl font-bold text-blue-600">R$ 1.411.088,5</h2></div>
-            <div class="card border-l-4 border-emerald-500 text-center"><p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Assertividade</p><h2 id="kpi-assert" class="text-2xl font-bold text-emerald-600">---</h2></div>
-            <div class="card border-l-4 border-rose-500 text-center"><p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Reprovados</p><h2 id="kpi-reprov" class="text-2xl font-bold text-rose-600">---</h2></div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 text-center">
+            <div class="card"><p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Testes Totais</p><h2 id="kpi-total" class="text-3xl font-bold text-slate-800">0</h2></div>
+            <div class="card border-b-4 border-blue-500"><p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Benchmark Mercado</p><h2 id="kpi-bench" class="text-xl font-bold text-blue-600 tracking-tight">R$ 1.411.088,5</h2></div>
+            <div class="card border-b-4 border-emerald-500"><p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Assertividade</p><h2 id="kpi-assert" class="text-3xl font-bold text-emerald-600">0%</h2></div>
+            <div class="card border-b-4 border-rose-500"><p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Total Reprovados</p><h2 id="kpi-reprov" class="text-3xl font-bold text-rose-600">0</h2></div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="card h-fit"><h3 class="text-lg font-bold text-slate-800 mb-6 uppercase text-sm">📦 Itens Críticos</h3><div id="item-list" class="space-y-4 text-xs">Aguardando dados...</div></div>
-            <div class="lg:col-span-2 card"><h3 class="text-lg font-bold text-slate-800 mb-4 uppercase text-sm">Tendência de Qualidade</h3><div id="chart"></div></div>
+            <div class="card h-fit">
+                <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">📦 Itens Críticos</h3>
+                <div id="item-list" class="space-y-5 text-sm">Aguardando dados...</div>
+            </div>
+            <div class="lg:col-span-2 card">
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Tendência Mensal de Qualidade</h3>
+                <div id="chart-main"></div>
+            </div>
         </div>
     </div>
 
     <script>
         const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXamYvh04HKUMqADox30UrRg1db4psyOnx3kUt8x1TbTqtbRFGe-_e1B4vVRe-eoW-KMSyFud7OGKm/pub?output=csv";
-        let raw = [];
+        let rawData = [];
         let chart;
 
-        // Função para encontrar coluna independente do nome exato
-        const findCol = (row, names) => {
-            return names.find(n => row.some(c => c.toLowerCase().trim() === n.toLowerCase()));
-        };
-
         async function init() {
-            const resp = await fetch(csvUrl);
-            const text = await resp.text();
-            const lines = text.split('\n').map(l => l.split(',').map(c => c.replace(/"/g, '').trim()));
-            const headers = lines[0];
-            
-            raw = lines.slice(1).map(r => {
-                let obj = {};
-                headers.forEach((h, i) => obj[h] = r[i]);
-                return obj;
-            });
+            try {
+                const resp = await fetch(csvUrl);
+                const text = await resp.text();
+                // Divide por linhas e trata aspas
+                const lines = text.split('\n').map(l => l.split(',').map(c => c.replace(/"/g, '').trim()));
+                const headers = lines[0];
+                
+                rawData = lines.slice(1).map(r => {
+                    let obj = {};
+                    headers.forEach((h, i) => obj[h] = r[i]);
+                    return obj;
+                });
 
-            // Preencher filtros dinamicamente
-            const colCentro = headers.find(h => h.toLowerCase().includes('centro')) || headers[0];
-            const colAno = headers.find(h => h.toLowerCase().includes('ano')) || headers[1];
-            
-            const centros = [...new Set(raw.map(d => d[colCentro]))].filter(Boolean).sort();
-            const anos = [...new Set(raw.map(d => d[colAno]))].filter(Boolean).sort();
+                // Detecta colunas de Centro e Ano automaticamente
+                const colCentro = headers.find(h => h.toLowerCase().includes('centro')) || headers[0];
+                const colAno = headers.find(h => h.toLowerCase().includes('ano')) || headers[1];
+                
+                const centros = [...new Set(rawData.map(d => d[colCentro]))].filter(Boolean).sort();
+                const anos = [...new Set(rawData.map(d => d[colAno]))].filter(Boolean).sort();
 
-            document.getElementById('sel-centro').innerHTML = '<option value="Todos">Todos</option>' + centros.map(c => `<option value="${c}">${c}</option>`).join('');
-            document.getElementById('sel-ano').innerHTML = '<option value="Todos">Todos</option>' + anos.map(a => `<option value="${a}">${a}</option>`).join('');
+                document.getElementById('sel-centro').innerHTML = '<option value="Todos">Todos os Centros</option>' + centros.map(c => `<option value="${c}">${c}</option>`).join('');
+                document.getElementById('sel-ano').innerHTML = '<option value="Todos">Todos os Anos</option>' + anos.map(a => `<option value="${a}">${a}</option>`).join('');
 
-            process();
+                processData();
+            } catch (e) {
+                console.error("Erro no carregamento:", e);
+                alert("Erro ao ler a planilha. Verifique se ela está 'Publicada na Web' como CSV.");
+            }
         }
 
-        function process() {
-            const fC = document.getElementById('sel-centro').value;
-            const fA = document.getElementById('sel-ano').value;
-            const fM = document.getElementById('sel-mes').value;
+        function processData() {
+            const fCentro = document.getElementById('sel-centro').value;
+            const fAno = document.getElementById('sel-ano').value;
+            const fMes = document.getElementById('sel-mes').value;
 
-            // Identificar colunas dinamicamente para o filtro
-            const headers = Object.keys(raw[0]);
+            // Busca nomes de colunas de forma flexível
+            const headers = Object.keys(rawData[0]);
             const colC = headers.find(h => h.toLowerCase().includes('centro'));
             const colA = headers.find(h => h.toLowerCase().includes('ano'));
             const colM = headers.find(h => h.toLowerCase().includes('mês')) || headers.find(h => h.toLowerCase().includes('mes'));
@@ -100,10 +109,10 @@
             const colR = headers.find(h => h.toLowerCase().includes('reprov'));
             const colI = headers.find(h => h.toLowerCase().includes('item'));
 
-            const filtered = raw.filter(d => {
-                return (fC === 'Todos' || d[colC] === fC) &&
-                       (fA === 'Todos' || d[colA] === fA) &&
-                       (fM === 'Todos' || d[colM] === fM);
+            const filtered = rawData.filter(d => {
+                return (fCentro === 'Todos' || d[colC] === fCentro) &&
+                       (fAno === 'Todos' || d[colA] === fAno) &&
+                       (fMes === 'Todos' || d[colM] === fMes);
             });
 
             // KPIs
@@ -115,41 +124,50 @@
             document.getElementById('kpi-assert').innerText = assert + '%';
             document.getElementById('kpi-reprov').innerText = reprov.toLocaleString('pt-BR');
 
-            // Itens
-            const items = {};
-            filtered.forEach(d => items[d[colI]] = (items[d[colI]] || 0) + (Number(d[colR]) || 0));
-            const sorted = Object.entries(items).sort((a,b) => b[1] - a[1]).slice(0, 5);
-            const max = sorted[0] ? sorted[0][1] : 1;
+            // Lista de Itens Críticos
+            const itemsMap = {};
+            filtered.forEach(d => {
+                const name = d[colI] || 'Desconhecido';
+                itemsMap[name] = (itemsMap[name] || 0) + (Number(d[colR]) || 0);
+            });
+            const sorted = Object.entries(itemsMap).sort((a,b) => b[1] - a[1]).slice(0, 5);
+            const maxVal = sorted[0] ? sorted[0][1] : 1;
 
             document.getElementById('item-list').innerHTML = sorted.map(([n, v]) => `
-                <div><div class="flex justify-between font-bold mb-1"><span>${n || 'Outros'}</span><span>${v}</span></div>
-                <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                <div class="bg-blue-500 h-full" style="width: ${(v/max)*100}%"></div></div></div>`).join('');
+                <div>
+                    <div class="flex justify-between font-bold text-slate-700 mb-1 uppercase text-[10px]"><span>${n}</span><span>${v}</span></div>
+                    <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-blue-500 h-full" style="width: ${(v/maxVal)*100}%"></div>
+                    </div>
+                </div>
+            `).join('');
 
             updateChart(filtered, colM, colT, colR);
         }
 
         function updateChart(data, colM, colT, colR) {
-            const meses = ['01','02','03','04','05','06','07','08','09','10','11','12'];
-            const valA = meses.map(m => {
-                const mesData = data.filter(d => d[colM] === m);
+            const mesesLabels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+            const valAprov = mesesLabels.map((m, i) => {
+                const mesNum = (i + 1).toString().padStart(2, '0');
+                const mesData = data.filter(d => d[colM] === mesNum);
                 const t = mesData.reduce((acc, c) => acc + (Number(c[colT]) || 0), 0);
                 const r = mesData.reduce((acc, c) => acc + (Number(c[colR]) || 0), 0);
                 return t > 0 ? ((1 - (r/t)) * 100).toFixed(2) : null;
             });
 
             const options = {
-                series: [{ name: 'Aprovação', data: valA }],
-                chart: { height: 350, type: 'area', toolbar: { show: false } },
+                series: [{ name: 'Aprovação', data: valAprov }],
+                chart: { height: 350, type: 'area', toolbar: { show: false }, fontFamily: 'Plus Jakarta Sans' },
                 colors: ['#10b981'],
                 stroke: { curve: 'smooth', width: 3 },
-                xaxis: { categories: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'] },
+                xaxis: { categories: mesesLabels },
                 yaxis: { min: 90, max: 100, labels: { formatter: v => v + '%' } },
-                fill: { type: 'gradient', gradient: { opacityFrom: 0.4, opacityTo: 0.1 } }
+                fill: { type: 'gradient', gradient: { opacityFrom: 0.4, opacityTo: 0.1 } },
+                dataLabels: { enabled: true, formatter: v => v + '%' }
             };
 
             if(chart) chart.destroy();
-            chart = new ApexCharts(document.querySelector("#chart"), options);
+            chart = new ApexCharts(document.querySelector("#chart-main"), options);
             chart.render();
         }
 
