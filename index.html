@@ -2,65 +2,50 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BI Operacional | Sérgio</title>
+    <title>BI Operacional | Estratificação Real</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; }
-        .card { background: white; border-radius: 1rem; padding: 1.5rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        select { border: 1px solid #cbd5e1; border-radius: 0.5rem; padding: 0.5rem; font-size: 0.8rem; min-width: 150px; background: white; outline: none; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .card { background: white; border-radius: 1rem; padding: 1.5rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        select { border: 1px solid #cbd5e1; border-radius: 0.5rem; padding: 0.5rem; font-size: 0.8rem; min-width: 160px; background: white; outline: none; }
     </style>
 </head>
 <body class="p-4 lg:p-8">
 
     <div class="max-w-7xl mx-auto">
-        <header class="bg-white p-6 rounded-2xl border border-slate-200 mb-8 shadow-sm">
-            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-                <div>
-                    <h1 class="text-2xl font-bold text-slate-900 leading-tight">Estratificação Operacional</h1>
-                    <p class="text-slate-500 text-sm font-medium italic">Sincronizado via Google Sheets</p>
-                </div>
-                
-                <div class="flex flex-wrap gap-4 items-end">
-                    <div class="flex flex-col"><label class="text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Centro de Serviço</label>
-                        <select id="sel-centro" onchange="processData()"><option value="Todos">Carregando...</option></select></div>
-                    <div class="flex flex-col"><label class="text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Ano</label>
-                        <select id="sel-ano" onchange="processData()"><option value="Todos">Carregando...</option></select></div>
-                    <div class="flex flex-col"><label class="text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Mês</label>
-                        <select id="sel-mes" onchange="processData()">
-                            <option value="Todos">Todos os Meses</option>
-                            <option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option>
-                            <option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option>
-                            <option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option>
-                            <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
-                        </select></div>
-                </div>
+        <header class="bg-white p-6 rounded-2xl border border-slate-200 mb-8 shadow-sm flex flex-col lg:flex-row justify-between items-center gap-6">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900 leading-tight">Estratificação de Reprovados</h1>
+                <p class="text-slate-500 text-sm font-medium italic">Dados Reais: Equipe 1 (Inicio)</p>
+            </div>
+            
+            <div class="flex flex-wrap gap-4 items-end">
+                <div class="flex flex-col"><label class="text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Local do Ensaio</label>
+                    <select id="sel-centro" onchange="processData()"></select></div>
+                <div class="flex flex-col"><label class="text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Ano</label>
+                    <select id="sel-ano" onchange="processData()"></select></div>
+                <div id="sync-status" class="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-3 py-2 rounded-lg uppercase italic">Sincronizado</div>
             </div>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 text-center">
-            <div class="card"><p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Testes Totais</p><h2 id="kpi-total" class="text-3xl font-bold text-slate-800">0</h2></div>
-            <div class="card border-b-4 border-blue-500"><p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Benchmark Mercado</p><h2 id="kpi-bench" class="text-xl font-bold text-blue-600 tracking-tight">R$ 1.411.088,5</h2></div>
+            <div class="card"><p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Total de Ensaios</p><h2 id="kpi-total" class="text-3xl font-bold text-slate-800">0</h2></div>
+            <div class="card border-b-4 border-blue-500"><p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Benchmark</p><h2 class="text-xl font-bold text-blue-600">R$ 1.411.088,5</h2></div>
             <div class="card border-b-4 border-emerald-500"><p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Assertividade</p><h2 id="kpi-assert" class="text-3xl font-bold text-emerald-600">0%</h2></div>
-            <div class="card border-b-4 border-rose-500"><p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Total Reprovados</p><h2 id="kpi-reprov" class="text-3xl font-bold text-rose-600">0</h2></div>
+            <div class="card border-b-4 border-rose-500"><p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Reprovados</p><h2 id="kpi-reprov" class="text-3xl font-bold text-rose-600">0</h2></div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="card h-fit">
-                <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">📦 Itens Críticos</h3>
-                <div id="item-list" class="space-y-5 text-sm">Aguardando dados...</div>
-            </div>
-            <div class="lg:col-span-2 card">
-                <h3 class="text-lg font-bold text-slate-800 mb-4">Tendência Mensal de Qualidade</h3>
-                <div id="chart-main"></div>
-            </div>
+            <div class="card h-fit"><h3 class="text-lg font-bold text-slate-800 mb-6 uppercase text-xs tracking-widest">📦 Itens Críticos (Reprovados)</h3><div id="item-list" class="space-y-5">Aguardando...</div></div>
+            <div class="lg:col-span-2 card"><h3 class="text-lg font-bold text-slate-800 mb-4 uppercase text-xs tracking-widest">Tendência de Aprovação Mensal</h3><div id="chart-main"></div></div>
         </div>
     </div>
 
     <script>
-        const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXamYvh04HKUMqADox30UrRg1db4psyOnx3kUt8x1TbTqtbRFGe-_e1B4vVRe-eoW-KMSyFud7OGKm/pub?output=csv";
+        // Link CSV da sua planilha (Aba Equipe 1)
+        const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXamYvh04HKUMqADox30UrRg1db4psyOnx3kUt8x1TbTqtbRFGe-_e1B4vVRe-eoW-KMSyFud7OGKm/pub?gid=0&output=csv";
         let rawData = [];
         let chart;
 
@@ -68,102 +53,95 @@
             try {
                 const resp = await fetch(csvUrl);
                 const text = await resp.text();
-                // Divide por linhas e trata aspas
                 const lines = text.split('\n').map(l => l.split(',').map(c => c.replace(/"/g, '').trim()));
                 const headers = lines[0];
                 
                 rawData = lines.slice(1).map(r => {
                     let obj = {};
                     headers.forEach((h, i) => obj[h] = r[i]);
+                    // Extrair Ano da coluna 'Data do Ensaio' (Ex: 06/10/2025)
+                    if (obj['Data do Ensaio']) {
+                        const parts = obj['Data do Ensaio'].split('/');
+                        obj._ano = parts[2];
+                        obj._mes = parts[1];
+                    }
                     return obj;
                 });
 
-                // Detecta colunas de Centro e Ano automaticamente
-                const colCentro = headers.find(h => h.toLowerCase().includes('centro')) || headers[0];
-                const colAno = headers.find(h => h.toLowerCase().includes('ano')) || headers[1];
-                
-                const centros = [...new Set(rawData.map(d => d[colCentro]))].filter(Boolean).sort();
-                const anos = [...new Set(rawData.map(d => d[colAno]))].filter(Boolean).sort();
+                // Preencher Filtros baseados nas suas colunas reais
+                const centros = [...new Set(rawData.map(d => d['Local do Ensaio']))].filter(Boolean).sort();
+                const anos = [...new Set(rawData.map(d => d._ano))].filter(Boolean).sort();
 
-                document.getElementById('sel-centro').innerHTML = '<option value="Todos">Todos os Centros</option>' + centros.map(c => `<option value="${c}">${c}</option>`).join('');
+                document.getElementById('sel-centro').innerHTML = '<option value="Todos">Todos os Locais</option>' + centros.map(c => `<option value="${c}">${c}</option>`).join('');
                 document.getElementById('sel-ano').innerHTML = '<option value="Todos">Todos os Anos</option>' + anos.map(a => `<option value="${a}">${a}</option>`).join('');
 
                 processData();
             } catch (e) {
-                console.error("Erro no carregamento:", e);
-                alert("Erro ao ler a planilha. Verifique se ela está 'Publicada na Web' como CSV.");
+                console.error(e);
+                document.getElementById('sync-status').innerText = "Erro ao Carregar";
             }
         }
 
         function processData() {
             const fCentro = document.getElementById('sel-centro').value;
             const fAno = document.getElementById('sel-ano').value;
-            const fMes = document.getElementById('sel-mes').value;
-
-            // Busca nomes de colunas de forma flexível
-            const headers = Object.keys(rawData[0]);
-            const colC = headers.find(h => h.toLowerCase().includes('centro'));
-            const colA = headers.find(h => h.toLowerCase().includes('ano'));
-            const colM = headers.find(h => h.toLowerCase().includes('mês')) || headers.find(h => h.toLowerCase().includes('mes'));
-            const colT = headers.find(h => h.toLowerCase().includes('total'));
-            const colR = headers.find(h => h.toLowerCase().includes('reprov'));
-            const colI = headers.find(h => h.toLowerCase().includes('item'));
 
             const filtered = rawData.filter(d => {
-                return (fCentro === 'Todos' || d[colC] === fCentro) &&
-                       (fAno === 'Todos' || d[colA] === fAno) &&
-                       (fMes === 'Todos' || d[colM] === fMes);
+                return (fCentro === 'Todos' || d['Local do Ensaio'] === fCentro) &&
+                       (fAno === 'Todos' || d._ano === fAno);
             });
 
-            // KPIs
-            const total = filtered.reduce((acc, c) => acc + (Number(c[colT]) || 0), 0);
-            const reprov = filtered.reduce((acc, c) => acc + (Number(c[colR]) || 0), 0);
-            const assert = total > 0 ? ((1 - (reprov / total)) * 100).toFixed(2) : "0.00";
+            // Motor de Cálculo de BI
+            const total = filtered.length;
+            const reprovados = filtered.filter(d => d['Situação'] === 'Reprovado').length;
+            const assert = total > 0 ? (((total - reprovados) / total) * 100).toFixed(2) : "0.00";
 
             document.getElementById('kpi-total').innerText = total.toLocaleString('pt-BR');
             document.getElementById('kpi-assert').innerText = assert + '%';
-            document.getElementById('kpi-reprov').innerText = reprov.toLocaleString('pt-BR');
+            document.getElementById('kpi-reprov').innerText = reprovados.toLocaleString('pt-BR');
 
-            // Lista de Itens Críticos
-            const itemsMap = {};
-            filtered.forEach(d => {
-                const name = d[colI] || 'Desconhecido';
-                itemsMap[name] = (itemsMap[name] || 0) + (Number(d[colR]) || 0);
+            renderItems(filtered);
+            renderChart(filtered);
+        }
+
+        function renderItems(data) {
+            const reprovsPorItem = {};
+            data.filter(d => d['Situação'] === 'Reprovado').forEach(d => {
+                const item = d['Item testado'] || 'Outros';
+                reprovsPorItem[item] = (reprovsPorItem[item] || 0) + 1;
             });
-            const sorted = Object.entries(itemsMap).sort((a,b) => b[1] - a[1]).slice(0, 5);
-            const maxVal = sorted[0] ? sorted[0][1] : 1;
+
+            const sorted = Object.entries(reprovsPorItem).sort((a,b) => b[1] - a[1]).slice(0, 5);
+            const max = sorted[0] ? sorted[0][1] : 1;
 
             document.getElementById('item-list').innerHTML = sorted.map(([n, v]) => `
                 <div>
                     <div class="flex justify-between font-bold text-slate-700 mb-1 uppercase text-[10px]"><span>${n}</span><span>${v}</span></div>
                     <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                        <div class="bg-blue-500 h-full" style="width: ${(v/maxVal)*100}%"></div>
+                        <div class="bg-blue-600 h-full" style="width: ${(v/max)*100}%"></div>
                     </div>
                 </div>
             `).join('');
-
-            updateChart(filtered, colM, colT, colR);
         }
 
-        function updateChart(data, colM, colT, colR) {
+        function renderChart(data) {
             const mesesLabels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-            const valAprov = mesesLabels.map((m, i) => {
+            const serieAprov = mesesLabels.map((m, i) => {
                 const mesNum = (i + 1).toString().padStart(2, '0');
-                const mesData = data.filter(d => d[colM] === mesNum);
-                const t = mesData.reduce((acc, c) => acc + (Number(c[colT]) || 0), 0);
-                const r = mesData.reduce((acc, c) => acc + (Number(c[colR]) || 0), 0);
-                return t > 0 ? ((1 - (r/t)) * 100).toFixed(2) : null;
+                const mesData = data.filter(d => d._mes === mesNum);
+                const t = mesData.length;
+                const r = mesData.filter(d => d['Situação'] === 'Reprovado').length;
+                return t > 0 ? (((t - r) / t) * 100).toFixed(2) : null;
             });
 
             const options = {
-                series: [{ name: 'Aprovação', data: valAprov }],
+                series: [{ name: 'Taxa Aprovação', data: serieAprov }],
                 chart: { height: 350, type: 'area', toolbar: { show: false }, fontFamily: 'Plus Jakarta Sans' },
                 colors: ['#10b981'],
                 stroke: { curve: 'smooth', width: 3 },
                 xaxis: { categories: mesesLabels },
                 yaxis: { min: 90, max: 100, labels: { formatter: v => v + '%' } },
-                fill: { type: 'gradient', gradient: { opacityFrom: 0.4, opacityTo: 0.1 } },
-                dataLabels: { enabled: true, formatter: v => v + '%' }
+                fill: { type: 'gradient', gradient: { opacityFrom: 0.4, opacityTo: 0.1 } }
             };
 
             if(chart) chart.destroy();
